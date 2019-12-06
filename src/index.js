@@ -3,11 +3,13 @@ import Phaser from 'phaser';
 import BootScene from '@/scenes/BootScene';
 import PlayScene from '@/scenes/PlayScene';
 
+/** @type {Phaser.Types.Core.GameConfig} */
 const config = {
   type: Phaser.AUTO,
   parent: 'phaser-example',
-  width: 800,
-  height: 600,
+  scale: {
+    mode: Phaser.Scale.ScaleModes.FIT,
+  },
   scene: [BootScene, PlayScene],
   physics: {
     default: 'arcade',
