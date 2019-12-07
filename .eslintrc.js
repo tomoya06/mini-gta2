@@ -14,7 +14,9 @@ module.exports = {
   },
   rules: {
     "linebreak-style": "off",
-    "import/no-extraneous-dependencies": "off"
+    "import/no-extraneous-dependencies": "off",
+    "no-param-reassign": "warn",
+    "no-underscore-dangle": "off",
   },
   settings: {
     "import/resolver": {
