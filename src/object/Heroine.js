@@ -10,16 +10,18 @@ export default class Heroine extends Phaser.Physics.Arcade.Sprite {
    */
   constructor(scene, x, y) {
     super(scene, x, y, ASSET_KEY.HEROINE, 1);
-    this.scene = scene;
-    this.scene.physics.add.existing(this);
-    this.scene.add.existing(this);
+    this.parentScene = scene;
+    this.parentScene.physics.add.existing(this);
+    this.parentScene.add.existing(this);
     this.facing = DIRECTION_KEY.DOWN;
+
+    this.pathFollower = null;
 
     this.defaultSpeed = 10;
     this.setCollideWorldBounds(true);
     this.setDisplaySize(8, 8);
 
-    this.setOrigin(0, 1);
+    this.setOrigin(0.5, 1);
     this.setSize(26, 28);
     this.setOffset(4, 4);
   }
@@ -76,5 +78,25 @@ export default class Heroine extends Phaser.Physics.Arcade.Sprite {
 
   stopAnimate() {
     this.setTexture(ASSET_KEY.HEROINE, 1 + valueOfDirectionKey(this.facing) * 3);
+  }
+
+  /**
+   * @param {number[][]} thePath
+   */
+  moveAlongThePath(thePath) {
+    const newPathObject = new Phaser.Curves.Path(thePath[0][0], thePath[0][1]);
+    for (let i = 1; i < thePath.length; i += 1) {
+      newPathObject.lineTo(thePath[i][0], thePath[i][1]);
+    }
+    this.pathFollower = new Phaser.GameObjects.PathFollower(
+      this.parentScene,
+      newPathObject,
+      thePath[0][0], thePath[0][1],
+      ASSET_KEY.HEROINE, 0,
+    );
+    this.parentScene.add.existing(this.pathFollower);
+    this.pathFollower.startFollow({
+      duration: 20000,
+    });
   }
 }

@@ -1,4 +1,4 @@
-import Phaser, { Scene } from 'phaser';
+import { Scene } from 'phaser';
 import { ASSET_KEY } from '../common/Constants';
 import Heroine from '../object/Heroine';
 import RealMap from '../other/RealMap';
@@ -31,7 +31,7 @@ export default class MainScene extends Scene {
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.cameras.main.startFollow(this.player);
     this.cameras.main.roundPixels = true; // avoid tile bleed
-    this.cameras.main.zoom = 5;
+    this.cameras.main.zoom = 3;
 
     // user input
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -40,19 +40,9 @@ export default class MainScene extends Scene {
   }
 
   async drawThePath() {
-    this.realMap = new RealMap(this.map, 'Road', 'Inland', 8, 8);
-    const pathResult = await this.realMap.findThePathInPixel(3, 3, 30, 14);
-    const pathDisplayContainer = new Phaser.GameObjects.Container(this);
-    for (let i = 0; i < pathResult.length - 1; i += 1) {
-      const subPath = new Phaser.GameObjects.Rectangle(
-        this,
-        pathResult[i][0], pathResult[i][1],
-        2, 2,
-        '0xff0000',
-      );
-      pathDisplayContainer.add(subPath);
-    }
-    this.add.existing(pathDisplayContainer);
+    this.realMap = new RealMap(this, this.map, 'Road', 'Inland', 8, 8);
+    const thePath = await this.realMap.findAndDrawThePath(3, 3, 31, 15);
+    this.player.moveAlongThePath(thePath);
   }
 
   update() {
